@@ -1,0 +1,198 @@
+#!/usr/bin/perl -w
+use warnings;
+use strict;
+my $ur;
+my @newlines;
+my $i;
+my $info;
+#my $urls;
+my $out;
+my $s;
+my @urls;
+
+print <<EOF;
+Ensure that the URLs in the input file should be given in the below order for CLM5 and CLM403 
+1.Activity.xml
+2.Build.xml
+3.BuildDeploy.xml
+4.BuildRequest.xml
+5.Common.xml
+6.Decision.xml
+7.Defect.xml
+8.Issue.xml
+9.Meeting.xml
+10.Risk.xml
+11.ScopeChange.xml
+12.ServiceRequest.xml
+13.Task.xml
+14.WorkProduct.xml
+15.WorkRequest.xml
+EOF
+
+
+
+open(FILE, "<input.txt") || die "File not found";
+my @lines = <FILE>;
+close(FILE);
+
+open(URLS, "<urls.txt") || die "File not found";
+ @urls = <URLS>;
+#@urls = sort(@urls);
+chomp @urls;
+#print @urls;
+close(URLS);
+
+print "URLs mentioned as follows and if it is not proper click CTRL+C :\n";
+print "1.Activity.xml           :$urls[0]\n";
+print "2.Build.xml   	        :$urls[1]\n";
+print "3.BuildDeploy.xml	:$urls[2]\n"; 
+print "4.BuildRequest.xml	:$urls[3]\n";
+print "5.Common.xml		:$urls[4]\n";
+print "6.Decision.xml		:$urls[5]\n";
+print "7.Defect.xml		:$urls[6]\n";
+print "8.Issue.xml		:$urls[7]\n";
+print "9.Meeting.xml		:$urls[8]\n";
+print "10.Risk.xml		:$urls[9]\n";
+print "11.ScopeChange.xml	:$urls[10]\n";
+print "12.ServiceRequest.xml	:$urls[11]\n";
+print "13.Task.xml		:$urls[12]\n";
+print "14.WorkProduct.xml	:$urls[13]\n";
+print "15.WorkRequest.xml	:$urls[14]\n";
+
+sleep(3);
+
+
+foreach (@lines) {
+if ( /configuration.providers\"\>/){
+
+$_ =~ s/configuration.providers\"\>/configuration.providers\"  xmlns="http:\/\/com.ibm.team.workitem\/providers\"\>/ ;
+
+push(@newlines,$_);
+
+}
+
+elsif ( /Activity/ && /Cust.Act/){
+
+$_ =~ s/( url=\")/ url=\"$urls[0]/g;
+push(@newlines,$_);
+}
+
+
+elsif ( /Build/ && /\/(Build\/Cust.Build.)/ && /(Cust.Build.)/){
+$_ =~ s/( url=\")/ url=\"$urls[1]/g;
+push(@newlines,$_);
+
+}
+
+elsif ( /BuildDeploy/ && /\/(BuildDeploy)/ && /Cust.BuildDeploy./){
+
+$_ =~ s/( url=\")/ url=\"$urls[2]/g;
+push(@newlines,$_);
+
+}
+
+#elsif ( /BuildRequest/ && /\/(BuildRequest)/ && /Cust.BuildReq./){
+
+elsif ( /BuildRequest/  && /Cust.BuildReq./){
+$_ =~ s/( url=\")/ url=\"$urls[3]/g;
+push(@newlines,$_);
+
+}
+
+elsif ( /Common/ && /\/Common\/Common/g){
+
+$_ =~ s/( url=\")/ url=\"$urls[4]/g;
+push(@newlines,$_);
+
+
+}
+
+elsif ( /Decision/ && /Cust.Dec/){
+
+$_ =~ s/( url=\")/ url=\"$urls[5]/g;
+push(@newlines,$_);
+
+}
+
+elsif ( /Defect/ && /\Defect/){
+
+$_ =~ s/( url=\")/ url=\"$urls[6]/g;
+push(@newlines,$_);
+
+
+}
+
+elsif ( /Issue/ && /Cust.Iss/ ) {
+
+#elsif ( /\/Issue/ && /(name=\"Cust.Iss./  && (/\/\/Issue\/Cust.Iss./)) {
+
+$_ =~ s/( url=\")/ url=\"$urls[7]/g;
+push(@newlines,$_);
+
+}
+
+elsif ( /Meeting/ && /Cust.Meet/){
+
+$_ =~ s/( url=\")/ url=\"$urls[8]/g;
+push(@newlines,$_);
+
+
+}
+
+elsif ( /Risk/ && /\/Risk/){
+
+$_ =~ s/( url=\")/ url=\"$urls[9]/g;
+push(@newlines,$_);
+
+
+}
+
+elsif ( /ScopeChange/ && /\/ScopeChange/){
+
+$_ =~ s/ url=\"/ url=\"$urls[10]/g;
+push(@newlines,$_);
+
+
+}
+
+elsif ( /ServiceRequest/ && /\/ServiceRequest/g){
+
+$_ =~ s/ url=\"/ url=\"$urls[11]/g;
+push(@newlines,$_);
+
+
+}
+
+elsif ( /Task/ && /Cust.Task/){
+
+$_ =~ s/ url=\"/ url=\"$urls[12]/g;
+push(@newlines,$_);
+
+
+}
+
+
+
+elsif ( /WorkProduct/ && /\/WorkProduct/){
+
+$_ =~ s/ url=\"/ url=\"$urls[13]/g;
+push(@newlines,$_);
+
+
+}
+
+elsif ( /WorkRequest/ && /\/WorkRequest/){
+
+$_ =~ s/ url=\"/ url=\"$urls[14]/g;
+push(@newlines,$_);
+
+}
+
+
+}
+
+open(FILE, ">input.txt") || die "File not found";
+print FILE @lines;
+
+close(FILE);
+
